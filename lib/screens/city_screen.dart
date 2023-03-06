@@ -5,17 +5,17 @@ import 'package:weather_today/utils/constants.dart';
 
 class CityScreen extends StatefulWidget {
   @override
-  _CityScreenState createState() => _CityScreenState();
+  CityScreenState createState() => CityScreenState();
 }
 
-class _CityScreenState extends State<CityScreen> {
+class CityScreenState extends State<CityScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           image: DecorationImage(
-            image: AssetImage('images/city_background.jpg'),
+            image: AssetImage('images/city_background.png'),
             fit: BoxFit.cover,
           ),
         ),
@@ -23,13 +23,18 @@ class _CityScreenState extends State<CityScreen> {
         child: SafeArea(
           child: Column(
             children: <Widget>[
-              Align(
-                alignment: Alignment.topLeft,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  child: Icon(
-                    Icons.arrow_back_ios,
-                    size: 50.0,
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: GestureDetector(
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
+                    child: Image.asset(
+                      'images/ic_back.png',
+                      width: 32.0,
+                    ),
                   ),
                 ),
               ),
@@ -38,9 +43,12 @@ class _CityScreenState extends State<CityScreen> {
                 child: null,
               ),
               ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  shape: StadiumBorder(),
+                ),
                 onPressed: () {},
                 child: Text(
-                  'Get Weather',
+                  'Search Weather',
                   style: kButtonTextStyle,
                 ),
               ),

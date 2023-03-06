@@ -16,7 +16,6 @@ dependencies:
     sdk: flutter
 
 
-
   cupertino_icons: ^1.0.2
 
 dev_dependencies:
@@ -35,7 +34,17 @@ flutter:
     - images/
 
   fonts:
-  - family: Spartan MB
+  - family: Museo Moderno
     fonts:
-    - asset: fonts/SpartanMB-Black.otf
-      weight: 900
+    - asset: fonts/MuseoModerno-Thin.ttf
+      weight: 100
+    - asset: fonts/MuseoModerno-Light.ttf
+      weight: 200
+    - asset: fonts/MuseoModerno-Regular.ttf
+      weight: 300
+    - asset: fonts/MuseoModerno-Medium.ttf
+      weight: 400
+    - asset: fonts/MuseoModerno-SemiBold.ttf
+      weight: 500
+    - asset: fonts/MuseoModerno-Bold.ttf
+      weight: 700
