@@ -7,7 +7,7 @@ class CityScreen extends StatefulWidget {
   @override
   CityScreenState createState() => CityScreenState();
 }
-
+String cityName = ' ';
 class CityScreenState extends State<CityScreen> {
   @override
   Widget build(BuildContext context) {
@@ -39,14 +39,29 @@ class CityScreenState extends State<CityScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.all(20.0),
-                child: null,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 24.0,
+                ),
+                child: TextField(
+                  style: TextStyle(
+                    fontFamily: 'Museo Moderno',
+                    color: Colors.black,
+                  ),
+                  decoration: kTextFieldInputDecoration,
+                  onChanged: (value) {
+                    cityName = value;
+                  },
+                ),
               ),
+
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   shape: StadiumBorder(),
                 ),
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.pop(context,cityName);
+                },
                 child: Text(
                   'Search Weather',
                   style: kButtonTextStyle,

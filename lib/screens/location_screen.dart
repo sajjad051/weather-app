@@ -1,16 +1,62 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_key_in_widget_constructors
 
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:weather_today/screens/city_screen.dart';
 import 'package:weather_today/utils/constants.dart';
 import 'package:weather_today/utils/custom_paint.dart';
 
+import '../services/weather.dart';
+
 class LocationScreen extends StatefulWidget {
+  final locationWeather;
+
+  const LocationScreen({super.key,required this.locationWeather});
+
   @override
   LocationScreenState createState() => LocationScreenState();
 }
 
 class LocationScreenState extends State<LocationScreen> {
+
+  late int temperature;
+  late int minTemperature;
+  late int maxTemperature;
+  late double windSpeed;
+  late int humidity;
+
+  late String cityName;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+   updateUi(widget.locationWeather);
+  }
+ void updateUi(dynamic weatherData){
+   setState(() {
+     if (weatherData == null) {
+       temperature = 0;
+       minTemperature = 0;
+       maxTemperature = 0;
+       windSpeed = 0.0;
+       humidity = 0;
+       cityName = 'Error!';
+       return;
+     }
+     double temp = weatherData['main']['temp'];
+     temperature = temp.toInt();
+     double minTemp = weatherData['main']['temp_min'];
+     minTemperature = minTemp.toInt();
+     double maxTemp = weatherData['main']['temp_max'];
+     maxTemperature = maxTemp.toInt();
+     humidity = weatherData['main']['humidity'];
+     windSpeed = weatherData['wind']['speed'] * 3.6;
+     cityName = weatherData['name'];
+   });
+ }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,12 +89,15 @@ class LocationScreenState extends State<LocationScreen> {
                   children: <Widget>[
                     Expanded(
                       child: Text(
-                        '23°',
+                        '$temperature°',
                         style: kTempTextStyle,
                       ),
                     ),
                     GestureDetector(
-                      onTap: () {},
+                      onTap: () async {
+                        var weatherData = await  WeatherModel().getLocationWeather();
+                        updateUi(weatherData);
+                      },
                       child: Image.asset(
                         'images/ic_current_location.png',
                         width: 32.0,
@@ -56,13 +105,20 @@ class LocationScreenState extends State<LocationScreen> {
                     ),
                     SizedBox(width: 24.0),
                     GestureDetector(
-                      onTap: () {
-                        Navigator.push(
+                      onTap: () async {
+                      var typeName = await  Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (context) => CityScreen(),
                           ),
                         );
+
+                      if(typeName != null){
+                        var weatherData = await WeatherModel().getCityWeather(typeName);
+                        updateUi(weatherData);
+                      }
+
+
                       },
                       child: Image.asset(
                         'images/ic_search.png',
@@ -88,7 +144,7 @@ class LocationScreenState extends State<LocationScreen> {
                     Padding(
                       padding: EdgeInsets.only(right: 15.0),
                       child: Text(
-                        'Dhaka',
+                        '$cityName',
                         textAlign: TextAlign.center,
                         style: kSmallTextStyle.copyWith(
                           fontSize: 16.0,
@@ -116,6 +172,31 @@ class LocationScreenState extends State<LocationScreen> {
                           style: kConditionTextStyle.copyWith(fontSize: 16.0),
                         ),
                       ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ConditionRow(
+                      icon: 'images/ic_temp.png',
+                      title: 'Min Temp',
+                      value: '$minTemperature°',
+                    ),
+                    ConditionRow(
+                      icon: 'images/ic_wind_speed.png',
+                      title: 'Wind Speed',
+                      value: '${windSpeed.toStringAsFixed(1)} Km/h',
+                    ),
+                    ConditionRow(
+                      icon: 'images/ic_temp.png',
+                      title: 'Max Temp',
+                      value: '$maxTemperature°',
+                    ),
+                    ConditionRow(
+                      icon: 'images/ic_humidity.png',
+                      title: 'Humidity',
+                      value: '$humidity%',
+                    )
+                  ],
+                ),
                     ],
                   ),
                 ),
@@ -124,6 +205,44 @@ class LocationScreenState extends State<LocationScreen> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class ConditionRow extends StatelessWidget {
+  final String icon;
+  final String title;
+  final String value;
+
+  const ConditionRow({
+    Key? key,
+    required this.icon,
+    required this.title,
+    required this.value,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Image.asset(
+          icon,
+          width: 24.0,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8.0,
+          ),
+          child: Text(
+            title,
+            style: kConditionTextStyleSmall,
+          ),
+        ),
+        Text(
+          value,
+          style: kConditionTextStyle,
+        ),
+      ],
     );
   }
 }
