@@ -48,6 +48,5 @@ class Location{
     } catch(e){
       print(e.toString());
     }
-
   }
 }
